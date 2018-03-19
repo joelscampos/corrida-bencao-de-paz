@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Admin | Mobilize-se Benção de Paz</title>
+  </head>
+  <body>
+    
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function(){
+        
+        
+
+        /*var jsonContent = 
+            {"items": 
+              [
+                {"Cod_Inscr": "1", "Cod_Prova": "10KM", "Num_Atleta": "1", "Nome_Completo": "ALAIN HIRT", "Sexo": "M", "Dt_Nasc": "9/17/1990", "CPF": "402.561.988-10", "Tel_Contato": "(11) 2942-8472", "Celular": "(11) 99691-3410", "Equipe": "MAMUTES RUN", "Camiseta": "G"}
+                , {"Cod_Inscr": "2", "Cod_Prova": "10KM", "Num_Atleta": "2", "Nome_Completo": "ALLAN JHONNY FESTA", "Sexo": "M", "Dt_Nasc": "1/11/1990", "CPF": "367.661.038-50", "Tel_Contato": "(11)2253-8222", "Celular": "(11) 94016-1994", "Equipe": "GRUPO TOYS", "Camiseta": "G"}
+              ]
+        }*/
+
+        $("#download_csv").click(function (){
+      
+                    
+          var url = "https://ip4supg4x5.execute-api.us-east-2.amazonaws.com/dev/admin/downloadAll";
+
+          $.getJSON(url, function( data ){
+
+            var jsonContent = {"items": data["Items"]};
+
+            const items = jsonContent.items
+            const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+            const header = Object.keys(items[0])
+            let csv = items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(';'))
+            csv.unshift(header.join(';'))
+            csv = csv.join('\r\n')
+
+            /*console.log(csv)*/
+            
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'Inscricoes_bencao_de_paz_2018.csv';
+            hiddenElement.click();
+
+          }); // $.getJSON
+        });
+        
+      });
+    </script>
+    <button id="download_csv">Download CSV</button> 
+  </body>
+</html>

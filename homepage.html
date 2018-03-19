@@ -1,0 +1,145 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Entrega Kits | Mobilize-se Benção de Paz</title>
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    
+
+    <style>
+      /*nav {
+        color: #17191c;
+        background-color: #f4f5f4;
+        font-family: "Roboto",sans-serif;
+        font-size: 1rem;
+      }
+    </style>
+    
+  </head>
+  <body>
+    
+    
+    <nav class="navbar navbar-default navbar-toggleable container">
+      <!-- Toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>        
+      </div>
+      
+      <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+        <div class="row">
+          <div class="col-12">
+            <div class="navbar-header" style="padding-right: 5px;">
+              <a class="navbar-brand" href="#">Total<small class="text-muted" id="totalKits" ></small></a>
+            </div>
+            <ul class="nav nav-pills">
+              <li class="active"><a href="#" id="link-group-ad" >A - D</a></li>
+              <li><a href="#" id="link-group-eh">E - H</a></li>
+              <li><a href="#" id="link-group-il">I - L</a></li>
+              <li><a href="#" id="link-group-mp">M - P</a></li>
+              <li><a href="#" id="link-group-qt">Q - T</a></li>
+              <li><a href="#" id="link-group-uz">U - Z</a></li>
+              <li></li>
+              <li></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12" id="div-search">
+            <input class="form-control mr-sm-2" type="text" placeholder="Busca" id="search-text">
+            <button class="btn btn-outline-success" type="submit" id="search-button">Pesquisa</button>
+            
+              <input type="checkbox" data-size="large" checked  id="somenteNaoEntregues"> 
+              Kits pendentes de entrega
+            
+          </div>
+        </div>
+      </div> <!-- class="collapse -->
+      
+    </nav>
+   
+    
+    
+    <section id="lista-atletas">
+      <div class="container rounded" id="main-container">
+        <div class="row" id="div-table">
+          <table class="table" id="table-principal">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Atleta</th>
+                <th scope="col">Equipe</th>
+                <th scope="col">Camiseta</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>        
+        </div>
+      </div>
+    </section>
+    
+    <!-- // Reference: https://getbootstrap.com/docs/3.3/javascript/ -->
+    <div id="myModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Entregue para:</h4>
+          </div>
+          <div class="modal-body">
+            <input class="form-control mr-sm-2" type="text" placeholder="Busca" id="entregue-para">
+          </div>
+          <div class="modal-footer">
+            <button id="btn-cancela" type="button" class="btn btn-default" data-dismiss="modal">Cancela</button>
+            <button id="btn-salva" type="button" class="btn btn-primary">Salva</button>
+          </div>
+        </div> <!-- /.modal-content -->
+      </div> <!-- /.modal-dialog -->
+    </div> <!-- /.modal -->
+    
+    
+    <!-- // Reference: https://getbootstrap.com/docs/3.3/javascript/ -->
+    <div id="atletaModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Detalhes</h4>
+          </div>
+          <div class="modal-body">
+            
+          </div>
+          <div class="modal-footer">
+            <button id="btn-cancela" type="button" class="btn btn-default" data-dismiss="modal">Fecha</button>
+          </div>
+        </div> <!-- /.modal-content -->
+      </div> <!-- /.modal-dialog -->
+    </div> <!-- /.modal -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    
+    <!--
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/js/bootstrap.min.js" integrity="sha384-ux8v3A6CPtOTqOzMKiuo3d/DomGaaClxFYdCu2HPMBEkf6x2xiDyJ7gkXU0MWwaD" crossorigin="anonymous"></script>
+    -->
+    
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
+    
+    
+    
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
