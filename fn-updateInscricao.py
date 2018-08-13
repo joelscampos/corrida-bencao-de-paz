@@ -4,11 +4,9 @@ import boto3
 
 
 def updateInscricao(event, context):
-    
     # event is a dictionary object.
     
     try:
-        
         print(event)
         
         # Checa se há algum conteúdo no body, e converte o conteúdo em um json.
@@ -22,33 +20,24 @@ def updateInscricao(event, context):
         # Get the service resource.
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('corrida-inscricoes')
-        
                 
-        nomeColunas = ("Cod_Inscr","Kit_Entregue","Nome_Entregue")        
-        
+        nomeColunas = ("Numero_de_inscricao","Kit_Entregue","Nome_Entregue")
         
         if ("inscricoes" in bodyRequest):        
             
             for registro in bodyRequest["inscricoes"]:
-                response = table.update_item(Key={"Cod_Inscr":registro["Cod_Inscr"]},
+                response = table.update_item(Key={"Numero_de_inscricao":registro["Numero_de_inscricao"]},
                                              UpdateExpression="SET Kit_Entregue = :Kit_Entregue, Nome_Entregue = :Nome_Entregue, Data_Entregue = :Data_Entregue",
                                              ExpressionAttributeValues={":Kit_Entregue": registro["Kit_Entregue"], 
                                                                         ":Nome_Entregue": registro["Nome_Entregue"],
                                                                         ":Data_Entregue": registro["Data_Entregue"]},
                                              ReturnValues= "UPDATED_NEW")
 
-                
-                
-
         body = {
             "message": str(response),
             #"message": "Os registros foram criados com sucesso!",
             "input": event
         }
-    
-    
-
-
     
         response = {
             "statusCode": 200,
@@ -67,8 +56,6 @@ def updateInscricao(event, context):
             },
             "body": json.dumps({"Erro": {"Descricao": str(err)}})
         }
-            
-
     return response
 
    

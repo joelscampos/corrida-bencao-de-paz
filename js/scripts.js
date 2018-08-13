@@ -51,7 +51,6 @@ $('document').ready(function(){
   
   /*$("#myModal #btn-cancela").click(function() {*/
   $("#myModal").not("#btn-cancela").on("hide.bs.modal", function() {
-    console.log(this);
     desmarcaCheckbox($(this));
   });
 
@@ -75,6 +74,9 @@ var executaEntrega = function(currentElement) {
   var nomeAtleta = myModal.children("input#nomeAtleta").val();
   var entreguePara = myModal.children(".modal-dialog").children(".modal-content").children(".modal-body").children("#entregue-para");
   
+  // clear the field "Entregue para"
+  myModal.children(".modal-dialog").children(".modal-content").children(".modal-body").children("#entregue-para").val("");
+  
   // NOME DA PESSOA PARA QUAL FOI ENTREGUE O KIT.
   if (entreguePara.val() === "") {
     entreguePara = entreguePara.attr("placeholder");
@@ -94,7 +96,7 @@ var executaEntrega = function(currentElement) {
   
   var dataToBeSent = JSON.stringify({"inscricoes":[
     {
-      "Cod_Inscr": idAtleta.toString(), 
+      "Numero_de_inscricao": idAtleta.toString(), 
       "Nome_Completo": nomeAtleta, 
       "Kit_Entregue": "True", 
       "Nome_Entregue": entreguePara,
@@ -105,7 +107,6 @@ var executaEntrega = function(currentElement) {
     
     if (status == "success") {
       // REMOVE THE ROW FROM THE TABLE.
-      console.log($("tr#" + idAtleta));
       $("tr#" + idAtleta).remove();
       
       $('#myModal').modal('hide');
@@ -129,25 +130,28 @@ var makeRequest = function(currentElement) {
       
   
   // Parametros da URL de pesquisa por grupo.
-  if (elementId.includes("link-group")) {
-    
-    elementType = "Group";
-    
-    url += "atleta/pesquisaGrupoNome?idGrupo=" + elementId.replace("link-group-","");
-    
-  } else if (elementId == "search-button") {
-    
+  if (elementId.includes("link-group")) {    
+    elementType = "Group";    
+    url += "atleta/pesquisaGrupoNome?idGrupo=" + elementId.replace("link-group-","");    
+  }
+  /*else if (elementId == "search-button") {    
     elementType = "BuscaNome";
     value = document.getElementById("search-text").value;
-    
     if (value === "")
       return;
     url += "atleta/pesquisa?Nome_Completo=" + value;
+  }*/
+  else {
+    value = document.getElementById("search-text").value;
+    if (value === "")
+      return;
+    url += "atleta/pesquisa?Pesquisa_texto=" + value;
   }
   
   if ($("#somenteNaoEntregues").prop("checked")) {
     url += "&somenteNaoEntregues=True";
-  } else {
+  }
+  else {
     url += "&somenteNaoEntregues=False";
   }
   
@@ -232,37 +236,39 @@ var makeRequest = function(currentElement) {
 
 var exibeDetalhesAtleta = function(idAtleta, nomeAtleta) {
   
-  var url = "https://ip4supg4x5.execute-api.us-east-2.amazonaws.com/dev/atleta/detalhe?Cod_Inscr=" + idAtleta.toString();
+  var url = "https://ip4supg4x5.execute-api.us-east-2.amazonaws.com/dev/atleta/detalhe?Numero_de_inscricao=" + idAtleta.toString();
   
   $.getJSON(url, function( data ){
     
     var atleta = data["Items"][0];
     
     var modalContent = '<pre>';
-    modalContent += '<p><strong>    Atleta: </strong>' + nomeAtleta + '</p>';
-    modalContent += '<p><strong>Nascimento: </strong>' + atleta["Dt_Nasc"] + '</p>';
-    modalContent += '<p><strong>      Sexo: </strong>' + atleta["Sexo"] + '</p>';
-    modalContent += '<p><strong> Documento: </strong>' + atleta["CPF"] + '</p>';
-    modalContent += '<p><strong>   Celular: </strong>' + atleta["Celular"] + '</p>';
-    modalContent += '<p><strong>     Prova: </strong>' + atleta["Cod_Prova"] + '</p>';
-    modalContent += '<p><strong>  Camiseta: </strong>' + atleta["Camiseta"] + '</p>';
-    modalContent += '</pre><pre>';
+      modalContent += '<p><strong>      Inscricao: </strong>' + atleta["Numero_de_inscricao"] + '</p>';
+      modalContent += '<p><strong>Grupo Categoria: </strong>' + atleta["Grupo_Categoria"] + '</p>';
+      modalContent += '<p><strong>      Categoria: </strong>' + atleta["Categoria"] + '</p>';
+      modalContent += '<p><strong>         Atleta: </strong>' + nomeAtleta + '</p>';
+      modalContent += '<p><strong>     Nascimento: </strong>' + atleta["Data_de_nascimento"] + '</p>';
+      modalContent += '<p><strong>         E-mail: </strong>' + atleta["E_mail"] + '</p>';
+      modalContent += '<p><strong> Tipo Documento: </strong>' + atleta["Tipo_de_Documento"] + '</p>';
+      modalContent += '<p><strong>      Documento: </strong>' + atleta["Documento"] + '</p>';
+      modalContent += '<p><strong>           Sexo: </strong>' + atleta["Sexo"] + '</p>';
+      modalContent += '<p><strong>       CAMISETA: </strong>' + atleta["CAMISETA"] + '</p>';
+      modalContent += '<p><strong>  CAMISETA KIDS: </strong>' + atleta["CAMISETA_KIDS"] + '</p>';
+      modalContent += '</pre><pre>';
+
     if (atleta["Kit_Entregue"] == "False") {
-      modalContent += '<p><strong> Kit Entregue: </strong>' + "Não" + '</p>';
+      modalContent += '<p><strong> Kit Entregue: </strong>' + "NÃO" + '</p>';
       modalContent += '<p><strong>Entregue para: </strong>' + "" + '</p>';
       modalContent += '<p><strong>Data entregue: </strong>' + "" + '</p>';
     } else {
-      modalContent += '<p><strong> Kit Entregue: </strong>' + "Sim" + '</p>';
+      modalContent += '<p><strong> Kit Entregue: </strong>' + "SIM" + '</p>';
       modalContent += '<p><strong>Entregue para: </strong>' + atleta["Nome_Entregue"] + '</p>';
       modalContent += '<p><strong>Data entregue: </strong>' + atleta["Data_Entregue"] + '</p>';
     }
     modalContent += '</pre>';
 
-    console.log($("#atletaModal").find(".modal-body"));
-
     // CLEAR THE MODAL
     $("#atletaModal").find(".modal-body").children().remove();
-
 
     $("#atletaModal").find(".modal-body").append(modalContent);
 
@@ -276,11 +282,12 @@ var putJSONOnTheTable = function(data) {
   
   /*$("#totalKits").find("small").remove();
   $("#totalKits").append('<small class="text-muted"> (' + data["KitsNaoEntregues"] + ')</small>');*/
-  document.getElementById("totalKits").innerHTML = '<small class="text-muted"> (' + data["KitsNaoEntregues"] + ')</small>';
-  
+  document.getElementById("totalKits").innerHTML = '<small class="text-muted"> (' + data["KitsNaoEntregues"] + ')</small>';  
   
   //dataResponse = JSON.parse(data);
   var atletas = data["Items"];
+  if (atletas == undefined)
+    return;
 
   // CREATE DYNAMIC TABLE.
   var table = document.createElement("table");
@@ -288,7 +295,7 @@ var putJSONOnTheTable = function(data) {
 
   // TABLE ROW.
   var tr = table.insertRow(-1);
-  var col = ["#","Atleta","Equipe","Camiseta"];
+  var col = ["#","Atleta","Camiseta","Camiseta Kids"];
 
   // TABLE HEADER.
   for (var i = 0; i < col.length; i++) {
@@ -297,9 +304,8 @@ var putJSONOnTheTable = function(data) {
     tr.appendChild(th);
   }
 
-
   // JSON KEYS.
-  var keys = ["Nome_Completo","Equipe","Camiseta"];
+  var keys = ["Nome_Completo","CAMISETA","CAMISETA_KIDS"];
 
   // TABLE ROWS.
   for (var i = 0; i < atletas.length; i++) {
@@ -308,8 +314,8 @@ var putJSONOnTheTable = function(data) {
     tr = table.insertRow(-1);
     
     // ADD THE HIDDEN ID.
-    tr.setAttribute("id", atletas[i]["Cod_Inscr"]);
-
+    tr.setAttribute("id", atletas[i]["Numero_de_inscricao"]);
+    
     // CHECKBOX.
     var checkbox = document.createElement("input");
     checkbox.setAttribute("type","checkbox");

@@ -20,7 +20,7 @@ def getInscricao(event, context):
         
         
             response = table.scan(
-                    ProjectionExpression="Cod_Inscr",
+                    ProjectionExpression="Numero_de_inscricao",
                     FilterExpression=Attr("Kit_Entregue").eq("False")
                 )
             
@@ -35,56 +35,65 @@ def getInscricao(event, context):
             
         
             # Attributes I want to see.
-            columns_to_return = "Cod_Inscr,Kit_Entregue,Nome_Completo,Equipe,Camiseta"
+            columns_to_return = "Numero_de_inscricao,Kit_Entregue,Nome_Completo,CAMISETA,CAMISETA_KIDS"
 
+            Numero_de_inscricao = ""
             Nome_Completo = ""
-            CPF = ""
-            Equipe = ""
-            Kit_Entregue = "False"
+            Documento = ""
+            Pesquisa_texto = ""
+            Kit_Entregue = "False"            
                 
             for key, value in event["queryStringParameters"].items():
+                if (key == "Numero_de_inscricao"):
+                    Numero_de_inscricao = value
                 if (key == "Nome_Completo"):
                     Nome_Completo = value.upper()
-                if (key == "CPF"):
-                    CPF = value
-                if (key == "Equipe"):
-                    Equipe = value.upper()
+                if (key == "Documento"):
+                    Documento = value
+                if (key == "Pesquisa_texto"):
+                    Pesquisa_texto = value.upper()
                 if (key == "somenteNaoEntregues"):
                     if (value == "True"):
                         Kit_Entregue = "False"
                     else:
                         Kit_Entregue = "True"
                     
+             # Pesquisa por [Numero_de_inscricao]
+            if (Numero_de_inscricao != ""):
+                response = table.scan(
+                    ProjectionExpression=columns_to_return,
+                    FilterExpression=Attr("Numero_de_inscricao").eq(Numero_de_inscricao)
+                )
                     
-                    
-            # Pesquisa por [Nome_Completo] + [CPF] + [Equipe]
+            # Pesquisa por [Nome_Completo]
             if (Nome_Completo != ""):
                 response = table.scan(
                     ProjectionExpression=columns_to_return,
                     FilterExpression=
                     Attr("Kit_Entregue").eq(Kit_Entregue) &
                     Attr('Nome_Completo').begins_with(Nome_Completo)
-                    
-
                 )
                     
-            # Pesquisa por [Nome_Completo] + [CPF]
-            elif (CPF != ""):
+            # Pesquisa por [Documento]
+            elif (Documento != ""):
                 response = table.scan(
                     ProjectionExpression=columns_to_return,
                     FilterExpression=
                     Attr("Kit_Entregue").eq(Kit_Entregue) &
-                    Attr("CPF").contains(CPF)
+                    Attr("Documento").contains(Documento)
 
                 )
 
-            # Pesquisa por [Nome_Completo]
-            elif (Equipe != ""):
+            # Pesquisa por qualquer campo
+            else:
                 response = table.scan(
                     ProjectionExpression=columns_to_return,
                     FilterExpression=
-                    Attr("Kit_Entregue").eq(Kit_Entregue) &
-                    Attr("Equipe").contains(Equipe)
+                    Attr("Kit_Entregue").eq(Kit_Entregue) & (
+                        Attr("Numero_de_inscricao").contains(Pesquisa_texto) |
+                        Attr("Nome_Completo").contains(Pesquisa_texto) |
+                        Attr("Documento").contains(Pesquisa_texto)
+                    )
                 )
                 
 
@@ -94,7 +103,7 @@ def getInscricao(event, context):
 
         print(response)
         
-        keyNames = ("Cod_Inscr","Cod_Prova","Num_Atleta","Nome_Completo","Sexo","Dt_Nasc.","CPF","Tel_Contato","Celular","Equipe","Camiseta","Kit_Entregue","Nome_Entregue","Data_Entregue")
+        keyNames = ("Numero_de_inscricao","Grupo_Categoria","Categoria","Nome_Completo","Data_de_nascimento","E_mail","Tipo_de_Documento","Documento","Sexo","CAMISETA","CAMISETA_KIDS","Kit_Entregue","Nome_Entregue","Data_Entregue")
         
         body["message"] = ""
         
@@ -105,7 +114,7 @@ def getInscricao(event, context):
             for key in keyNames:
                 if (key in item):
                     body["Item"][key] = item[key].title()
-                    if (key == "Camiseta"):
+                    if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                         body["Item"][key] = body["Item"][key].upper()
             
             
@@ -121,7 +130,7 @@ def getInscricao(event, context):
                 for key in keyNames:
                     if (key in item):
                         body["Items"][ix][key] = item[key].title()
-                        if (key == "Camiseta"):
+                        if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                             body["Items"][ix][key] = body["Items"][ix][key].upper()
                 ix += 1
         else:
@@ -169,7 +178,7 @@ def getAtletasPorGrupoNome(event, context):
         
         
             response = table.scan(
-                    ProjectionExpression="Cod_Inscr",
+                    ProjectionExpression="Numero_de_inscricao",
                     FilterExpression=Attr("Kit_Entregue").eq("False")
                 )
             
@@ -184,9 +193,9 @@ def getAtletasPorGrupoNome(event, context):
             
         
             # Attributes I want to see.
-            columns_to_return = "Cod_Inscr,Kit_Entregue,Nome_Completo,Equipe,Camiseta"
-
-                        # Pesquisa por [Nome_Completo]
+            columns_to_return = "Numero_de_inscricao,Kit_Entregue,Nome_Completo,CAMISETA,CAMISETA_KIDS"
+            
+            # Pesquisa por [Nome_Completo]
             if ("idGrupo" in event["queryStringParameters"] and event["queryStringParameters"]["idGrupo"] != ""):
                 idGrupo = event["queryStringParameters"]["idGrupo"]
                 if idGrupo == "ad":
@@ -273,7 +282,7 @@ def getAtletasPorGrupoNome(event, context):
 
         print(response)
         
-        keyNames = ("Cod_Inscr","Cod_Prova","Num_Atleta","Nome_Completo","Sexo","Dt_Nasc.","CPF","Tel_Contato","Celular","Equipe","Camiseta","Kit_Entregue","Nome_Entregue","Data_Entregue")
+        keyNames = ("Numero_de_inscricao","Grupo_Categoria","Categoria","Nome_Completo","Data_de_nascimento","E_mail","Tipo_de_Documento","Documento","Sexo","CAMISETA","CAMISETA_KIDS","Kit_Entregue","Nome_Entregue","Data_Entregue")
         
         body["message"] = ""
         
@@ -284,7 +293,7 @@ def getAtletasPorGrupoNome(event, context):
             for key in keyNames:
                 if (key in item):
                     body["Item"][key] = item[key].title()
-                    if (key == "Camiseta"):
+                    if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                         body["Item"][key] = body["Item"][key].upper()
             
             
@@ -299,7 +308,7 @@ def getAtletasPorGrupoNome(event, context):
                 for key in keyNames:
                     if (key in item):
                         body["Items"][ix][key] = item[key].title()
-                        if (key == "Camiseta"):
+                        if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                             body["Items"][ix][key] = body["Items"][ix][key].upper()
                 ix += 1
         else:
@@ -307,8 +316,6 @@ def getAtletasPorGrupoNome(event, context):
             
 
         body["input"] = event
-        
-
         response = {
             "statusCode": 200,
             "headers": {
@@ -341,18 +348,12 @@ def getDetalheAtleta(event, context):
         table = dynamodb.Table('corrida-inscricoes')
         
         body = {}
-        
         response = ""
         
         # GET request
         if ("queryStringParameters" in event):
         
-        
-            response = table.scan(
-                    ProjectionExpression="Cod_Inscr",
-                    FilterExpression=Attr("Kit_Entregue").eq("False")
-                )
-            
+            response = table.scan(ProjectionExpression="Numero_de_inscricao",FilterExpression=Attr("Kit_Entregue").eq("False"))
             
             # ScannedCount — the number of items that matched the key condition expression, before a filter expression (if present) was applied..
             body["TotalKits"] = response["ScannedCount"]
@@ -360,25 +361,17 @@ def getDetalheAtleta(event, context):
             # Count — the number of items that remain, after a filter expression (if present) was applied.
             body["KitsNaoEntregues"] = response["Count"]
             
-            
-        
-            # Attributes I want to see.
-            columns_to_return = "Cod_Inscr,Kit_Entregue,Nome_Completo,Equipe,Camiseta"
-
-                        # Pesquisa por [Nome_Completo]
-            if ("Cod_Inscr" in event["queryStringParameters"]):
+            # Pesquisa por [Numero_de_inscricao]
+            if ("Numero_de_inscricao" in event["queryStringParameters"]):
                 
-                Cod_Inscr = event["queryStringParameters"]["Cod_Inscr"]
+                Numero_de_inscricao = event["queryStringParameters"]["Numero_de_inscricao"]
                 
-                response = table.scan(FilterExpression=Attr("Cod_Inscr").eq(Cod_Inscr))                    
-
+                response = table.scan(FilterExpression=Attr("Numero_de_inscricao").eq(Numero_de_inscricao))
 
             # Count — the number of items that remain, after a filter expression (if present) was applied.
-            body["TotalSelecionado"] = response["Count"]
-        
+            body["TotalSelecionado"] = response["Count"]        
 
         print(response)
-        
         
         body["message"] = ""
         
@@ -386,9 +379,9 @@ def getDetalheAtleta(event, context):
         if ('Item' in response):
             body["Item"] = {}
             item = response["Item"]
-            for key, valur in item.items():
+            for key, value in item.items():
                 body["Item"][key] = value.title()
-                if (key == "Camiseta"):
+                if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                     body["Item"][key] = body["Item"][key].upper()
             
             
@@ -402,15 +395,13 @@ def getDetalheAtleta(event, context):
                 body["Items"].append({})
                 for key,value in item.items():
                     body["Items"][ix][key] = item[key].title()
-                    if (key == "Camiseta"):
+                    if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                         body["Items"][ix][key] = body["Items"][ix][key].upper()
                 ix += 1
         else:
-            body["message"] = "Id não encontrado!"
-            
+            body["message"] = "Id não encontrado!"            
 
         body["input"] = event
-        
 
         response = {
             "statusCode": 200,
@@ -433,9 +424,6 @@ def getDetalheAtleta(event, context):
     return response
 
 
-
-
-
 def getDownloadAllRecords(event, context):
     
     try:
@@ -444,13 +432,9 @@ def getDownloadAllRecords(event, context):
         table = dynamodb.Table('corrida-inscricoes')
         
         body = {}
-        
                 
-        response = table.scan(FilterExpression=Attr("Cod_Inscr").exists())
-
-
-        print(response)
-        
+        response = table.scan(FilterExpression=Attr("Numero_de_inscricao").exists())
+        print(response)        
         
         body["message"] = ""
         
@@ -461,15 +445,11 @@ def getDownloadAllRecords(event, context):
             body["Items"].append({})
             for key,value in item.items():
                 body["Items"][ix][key] = item[key].title().strip()
-                if (key == "Camiseta"):
+                if (key == "CAMISETA" or key == "CAMISETA_KIDS"):
                     body["Items"][ix][key] = body["Items"][ix][key].upper()
             ix += 1
 
-            
-
         body["input"] = event
-        
-
         response = {
             "statusCode": 200,
             "headers": {

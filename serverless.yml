@@ -155,13 +155,13 @@ resources:
       Properties:
         TableName: corrida-inscricoes
         AttributeDefinitions:
-          - AttributeName: Cod_Inscr
+          - AttributeName: Numero_de_inscricao
             AttributeType: S
         KeySchema:
-          - AttributeName: Cod_Inscr
+          - AttributeName: Numero_de_inscricao
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 20
+          ReadCapacityUnits: 40
           WriteCapacityUnits: 20
 #    NewResource:
 #      Type: AWS::S3::Bucket

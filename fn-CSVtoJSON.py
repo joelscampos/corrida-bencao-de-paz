@@ -4,7 +4,8 @@ def converte_CSV_into_JSON(arquivoCSV, arquivoJSON):
     
     nrLinha = 0
     coluna_numero = {}
-    colunasEsperadas = "Cod_Inscr","Cod_Prova","Num_Atleta","Nome_Completo","Sexo","Dt_Nasc","CPF","Tel_Contato","Celular","Equipe","Camiseta"
+    colunasEsperadas = "Numero_de_inscricao","Grupo_Categoria","Categoria","Nome_Completo","Data_de_nascimento","E_mail","Tipo_de_Documento","Documento","Sexo","CAMISETA","CAMISETA_KIDS"
+    #colunasEsperadas = "Cod_Inscr","Cod_Prova","Num_Atleta","Nome_Completo","Sexo","Dt_Nasc","CPF","Tel_Contato","Celular","Equipe","Camiseta"
     #colunasEsperadas = "id_seq","Modalidade","Categoria","ID_Usuario","Nome_Completo","Sexo","Email","Data_Nascto","Num_Documento","Camiseta","Equipe"
     codInscrList = []
     numAtletaList = []
@@ -17,10 +18,14 @@ def converte_CSV_into_JSON(arquivoCSV, arquivoJSON):
         
         
         linhaCSV = linhaCSV.rstrip()  # remove all kinds of trailing whitespace '\n'        
+        if (nrLinha == 1):
+            linhaCSV = linhaCSV.replace(" ","_").replace("-","_") # Na linha 1 (cabecalho) troca espaços e hifens por underline.
+
         linhaCSV = linhaCSV.split(";")
 
         # Na primeira linha, checa se o cabecalho do CSV tem todas as colunas esperadas.
         if (nrLinha == 1):
+            linhaCSV = linhaCSV
             # Checa as colunas esperadas
             for col in colunasEsperadas:
                 if (not col in linhaCSV):
@@ -35,23 +40,16 @@ def converte_CSV_into_JSON(arquivoCSV, arquivoJSON):
         # Pega as colunas esperadas, e imprime-as.
         for col in colunasEsperadas:
             
-            if (col == "Cod_Inscr"):
+            if (col == "Numero_de_inscricao"):
                 if (linhaCSV[coluna_numero[col]] in codInscrList):
-                    print("** ERRO ** CHAVE DUPLICADA! Linha: " + str(nrLinha) + " [Cod_Inscr]: " + linhaCSV[coluna_numero[col]])
+                    print("** ERRO ** CHAVE DUPLICADA! Linha: " + str(nrLinha) + " [Numero_de_inscricao]: " + linhaCSV[coluna_numero[col]])
                     break # sai deste for.
                 codInscrList.append(linhaCSV[coluna_numero[col]].upper())
-                
-
-            if (col == "Num_Atleta"):
-                if (linhaCSV[coluna_numero[col]] in numAtletaList):
-                    print("** AVISO ** Usuarios[Num_Atleta] repetidos! Linha: " + str(nrLinha) + " [Num_Atleta]: " + linhaCSV[coluna_numero[col]])
-                numAtletaList.append(linhaCSV[coluna_numero[col]].upper())
-                    
             
             linhaJSON[col] = linhaCSV[coluna_numero[col]].upper()
             
         if (len(linhaJSON) == 0):
-            continue # var para a proxima linha do for.
+            continue # var para a proxima linha desse "for loop".
 
         if (nrLinha > 2):
             file_json.write(',')
@@ -64,5 +62,5 @@ def converte_CSV_into_JSON(arquivoCSV, arquivoJSON):
     file_json.close()
     return
 
-converte_CSV_into_JSON("C:/workspace/corrida-bencao-de-paz/test/Inscricoes_bencao_de_paz_2018.csv",
-                       "C:/workspace/corrida-bencao-de-paz/test/Inscricoes_bencao_de_paz_2018.JSON")
+converte_CSV_into_JSON("C:/workspace/corrida-bencao-de-paz/test/ListagemGeral_6238_07082018191948.csv",
+                       "C:/workspace/corrida-bencao-de-paz/test/ListagemGeral_6238_07082018191948.JSON")
