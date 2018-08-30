@@ -74,8 +74,6 @@ var executaEntrega = function(currentElement) {
   var nomeAtleta = myModal.children("input#nomeAtleta").val();
   var entreguePara = myModal.children(".modal-dialog").children(".modal-content").children(".modal-body").children("#entregue-para");
   
-  // clear the field "Entregue para"
-  myModal.children(".modal-dialog").children(".modal-content").children(".modal-body").children("#entregue-para").val("");
   
   // NOME DA PESSOA PARA QUAL FOI ENTREGUE O KIT.
   if (entreguePara.val() === "") {
@@ -84,6 +82,9 @@ var executaEntrega = function(currentElement) {
     entreguePara = entreguePara.val();
   }
   
+  // clear the field "Entregue para"
+  myModal.children(".modal-dialog").children(".modal-content").children(".modal-body").children("#entregue-para").val("");
+
   var currentdate = new Date(); 
   var datetime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
@@ -102,6 +103,7 @@ var executaEntrega = function(currentElement) {
       "Nome_Entregue": entreguePara,
       "Data_Entregue": datetime.toString()}
     ]});
+  
   /*$("#entregue-para").attr("placeholder",nomeAtleta);*/
   $.post(url, dataToBeSent, function( data, status ){
     
@@ -122,7 +124,7 @@ var executaEntrega = function(currentElement) {
 
 
 var makeRequest = function(currentElement) {
-  
+
   var url = "https://ip4supg4x5.execute-api.us-east-2.amazonaws.com/dev/";
   var elementType = "";
   var totalSelecionado = "";
@@ -130,7 +132,7 @@ var makeRequest = function(currentElement) {
       
   
   // Parametros da URL de pesquisa por grupo.
-  if (elementId.includes("link-group")) {    
+  if (elementId.substring(0,10) === "link-group") {    
     elementType = "Group";    
     url += "atleta/pesquisaGrupoNome?idGrupo=" + elementId.replace("link-group-","");    
   }
@@ -147,7 +149,7 @@ var makeRequest = function(currentElement) {
       return;
     url += "atleta/pesquisa?Pesquisa_texto=" + value;
   }
-  
+
   if ($("#somenteNaoEntregues").prop("checked")) {
     url += "&somenteNaoEntregues=True";
   }
@@ -264,8 +266,8 @@ var exibeDetalhesAtleta = function(idAtleta, nomeAtleta) {
       modalContent += '<p><strong> Kit Entregue: </strong>' + "SIM" + '</p>';
       modalContent += '<p><strong>Entregue para: </strong>' + atleta["Nome_Entregue"] + '</p>';
       modalContent += '<p><strong>Data entregue: </strong>' + atleta["Data_Entregue"] + '</p>';
-    }
-    modalContent += '</pre>';
+    }    
+    modalContent += '</pre>';    
 
     // CLEAR THE MODAL
     $("#atletaModal").find(".modal-body").children().remove();
@@ -279,7 +281,7 @@ var exibeDetalhesAtleta = function(idAtleta, nomeAtleta) {
 
 
 var putJSONOnTheTable = function(data) {
-  
+
   /*$("#totalKits").find("small").remove();
   $("#totalKits").append('<small class="text-muted"> (' + data["KitsNaoEntregues"] + ')</small>');*/
   document.getElementById("totalKits").innerHTML = '<small class="text-muted"> (' + data["KitsNaoEntregues"] + ')</small>';  
@@ -320,7 +322,7 @@ var putJSONOnTheTable = function(data) {
     var checkbox = document.createElement("input");
     checkbox.setAttribute("type","checkbox");
     var td = document.createElement("td");
-    td.append(checkbox);
+    $(td).append(checkbox);
     tr.appendChild(td);
 
     // ADD THE JSON DATA TO THE TABLE AS ROWS.

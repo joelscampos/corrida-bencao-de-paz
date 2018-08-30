@@ -15,13 +15,53 @@
         font-family: "Roboto",sans-serif;
         font-size: 1rem;
       }*/
+      
+      .nav>li>a  {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+      #link-group-ad, #link-group-eh, #link-group-il, #link-group-mp, #link-group-qt, #link-group-uz {
+        padding-left: 30px;
+        padding-right: 30px;
+        font-size: 25px;
+      }
+      #div-table > table > thead > tr:nth-child(1) > th:nth-child(1),
+      #div-table > table > tbody > tr:nth-child(1) > th:nth-child(1),
+      #div-table > table > tbody > tr > td:nth-child(1) {
+        padding-left: 50px;
+      }
+      #entregue-para {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        font-size: 30px;
+      }
+      
+      #div-table > table > tbody > tr > td:nth-child(1) {
+        width: 30px;
+      }
+      #div-table > table > tbody > tr > td:nth-child(2) {
+        font-size: 20px;
+        width: 400px;
+      }
+      #div-table > table > tbody > tr > td:nth-child(3) {
+        width: 180px;
+      }
+      #div-table > table > tbody > tr > td:nth-child(4) {
+        width: 180px;
+      }
+      #atletaModal > div > div > div.modal-body > pre > p {
+        font-size: 15px;
+      }
+      
     </style>
     
   </head>
   <body>
     
     
-    <nav class="navbar navbar-default navbar-toggleable container">
+    <nav class="navbar navbar-default navbar-toggleable container-fluid">
       <!-- Toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1" aria-expanded="false">
@@ -67,7 +107,7 @@
     
     
     <section id="lista-atletas">
-      <div class="container rounded" id="main-container">
+      <div class="container-fluid rounded" id="main-container">
         <div class="row" id="div-table">
           <table class="table" id="table-principal">
             <thead>
@@ -97,8 +137,8 @@
             <input class="form-control mr-sm-2" type="text" placeholder="Busca" id="entregue-para">
           </div>
           <div class="modal-footer">
-            <button id="btn-cancela" type="button" class="btn btn-default" data-dismiss="modal">Cancela</button>
-            <button id="btn-salva" type="button" class="btn btn-primary">Salva</button>
+            <button id="btn-cancela" type="button" class="btn btn-default btn-lg" data-dismiss="modal">Cancela</button>
+            <button id="btn-salva" type="button" class="btn btn-primary btn-lg">Salva</button>
           </div>
         </div> <!-- /.modal-content -->
       </div> <!-- /.modal-dialog -->
@@ -117,7 +157,8 @@
             
           </div>
           <div class="modal-footer">
-            <button id="btn-cancela" type="button" class="btn btn-default" data-dismiss="modal">Fecha</button>
+            <button id="btn-ir-entrega" type="button" class="btn btn-primary btn-lg">Ir Entrega</button>
+            <button id="btn-cancela" type="button" class="btn btn-default btn-lg" data-dismiss="modal">Fecha</button>
           </div>
         </div> <!-- /.modal-content -->
       </div> <!-- /.modal-dialog -->
